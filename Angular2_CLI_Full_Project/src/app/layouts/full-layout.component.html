@@ -1,0 +1,114 @@
+<div style="background-color: #ffffff">
+
+<header class="app-header navbar">
+  <button class="navbar-toggler mobile-sidebar-toggler hidden-lg-up" type="button">&#9776;</button>
+  <img src="assets/img/avatars/AlphaNote.png"> <h3 style="padding-top: 10px;">Alpha Note</h3>
+
+
+  <ul class="nav navbar-nav ml-auto">
+    <li class="nav-item dropdown" dropdown (onToggle)="toggled($event)">
+      <a style="padding-right: 10px;" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" dropdownToggle>
+        <img src="assets/img/avatars/6.jpg" class="img-avatar" alt="admin@bootstrapmaster.com">
+        <span class="hidden-md-down">admin</span>
+      </a>
+
+      <script>
+
+        console.log("Hello the world ");
+
+
+        function init() {
+          document.getElementById("field1").onkeyup = function() {
+            // var pattern = new RegExp('[\n\r].*wolframMath,:\s*([^\n\r]*)');
+            var pattern = /(?<=\[).+?(?=\])/;
+            console.log(this.value.match(pattern)[0]);
+
+            var searchFor = this.value.match(pattern)[0];
+
+            if (searchFor !== 0 || null){
+              var apiUrl = "http://api.wolframalpha.com/v2/query?appid=69XEEY-JLR5EHW536&output=json&input=" + searchFor;
+              fetch(apiUrl).then(function(response) {
+                if (response.status !== 200) {
+                  console.log("error is there: " + response.status);
+                  return;
+                }
+                response.json().then(function(data) {
+                  console.log(data);
+                  console.log("++++++++ " + data.queryresult.pods[2].subpods[0].img.src);
+                  if (data.queryresult.datatypes === "Chemical,MatterPhase") {
+                    document.getElementById('previewMode').src = data.queryresult.pods[2].subpods[0].img.src;
+                  }
+
+                  if (data.queryresult.datatypes === "Math,MathematicalFunctionIdentity") {
+                    document.getElementById('previewMode').src = data.queryresult.pods[1].subpods[0].img.src;
+                  }
+                });
+              }).catch(function(err) {
+                console.log("Fetch error ", err);
+              });
+            }
+
+          };
+        }
+
+        window.onload = init;
+
+      </script>
+
+      <div class="dropdown-menu dropdown-menu-right" dropdownMenu aria-labelledby="simple-dropdown">
+
+        <div class="dropdown-header text-center"><strong>Account</strong></div>
+
+
+
+        <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Profile</a>
+        <a class="dropdown-item" href="#"><i class="fa fa-wrench"></i> Setting</a>
+        <a class="dropdown-item" href="#"><i class="fa fa-usd"></i> Payments<span class="badge badge-default">42</span></a>
+        <a class="dropdown-item" href="#"><i class="fa fa-file"></i> Projects<span class="badge badge-primary">42</span></a>
+        <div class="divider"></div>
+        <a class="dropdown-item" href="#"><i class="fa fa-shield"></i> Lock account</a>
+        <a class="dropdown-item" href="#"><i class="fa fa-lock"></i> Logout</a>
+      </div>
+    </li>
+
+  </ul>
+
+</header>
+
+<div class="app-body">
+  <div class="sidebar">
+    <nav class="sidebar-nav">
+      <ul class="nav">
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/Math']"><i class=" fa fa-calculator"></i> Math</a>
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/Chemistry']"><i class="fa fa-tasks"></i> Chemistry</a>
+        </li>
+
+        <li class="divider"></li>
+        <li class="nav-title">
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Main content -->
+  <main class="main">
+    <textarea rows="30" cols="200" id="field1"></textarea>
+    <img style="padding-bottom:300px;" src="" id="previewMode">
+
+    <!-- Breadcrumb -->
+
+
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
+    </div><!-- /.conainer-fluid -->
+  </main>
+
+</div>
+</div>
+
+<footer class="app-footer">
+  <p>α-Note &copy; 2017</p>
+</footer>
+
+
